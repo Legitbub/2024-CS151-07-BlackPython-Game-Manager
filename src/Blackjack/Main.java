@@ -1,3 +1,4 @@
+/*
 package Blackjack;
 
 public class Main {
@@ -15,9 +16,11 @@ public class Main {
         game.getDeck().newDeck();
     }
 
-    /* each player (excluding the dealer) makes a bet
+    */
+/* each player (excluding the dealer) makes a bet
     Note: I'm currently unsure how were going to get the user input. For now as a placeholder I'm just setting the
-    bets to a constant value, but this will need to be changed later */
+    bets to a constant value, but this will need to be changed later *//*
+
     private void makeBets(){
         for(Player p : game.getPlayers()){
             p.setBet(10);
@@ -60,3 +63,4 @@ public class Main {
     }
     
 }
+*/

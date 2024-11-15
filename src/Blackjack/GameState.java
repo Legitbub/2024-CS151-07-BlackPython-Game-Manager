@@ -10,7 +10,7 @@ public class GameState{
     private AutomatedPlayer p1;
     private AutomatedPlayer p2;
     private ArrayList<Person> people;
-    //private int currentPlayer;
+    private int currentPlayer;
 
     //default start to new game. All players have balances of 0 and no cards. User will always go first.
     public GameState(){

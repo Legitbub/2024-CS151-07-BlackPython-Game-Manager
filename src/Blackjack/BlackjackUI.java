@@ -1,16 +1,16 @@
-import javafx.application.Application;
+package Blackjack;
+
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
-import javafx.stage.Stage;
 
-public class BlackjackUI extends Application {
+public class BlackjackUI {
+    private Blackjack.GameState game = new Blackjack.GameState();
+    private Scene ui;
 
-    private final double DEFAULT_WINDOW_LENGTH = 800;
-    private final double DEFAULT_WINDOW_WIDTH = 600;
-    @Override
-    public void start(Stage stage) {
+    public BlackjackUI(double length, double width) {
         HBox dealer = new HBox();
         VBox cpu1 = new VBox();
         VBox cpu2 = new VBox();
@@ -33,16 +33,23 @@ public class BlackjackUI extends Application {
         bp.setRight(cpu2);
         bp.setBottom(player);
         bp.setCenter(gameLabel);
-
-        Scene scene = new Scene(bp, DEFAULT_WINDOW_LENGTH, DEFAULT_WINDOW_WIDTH);
-
-
-        stage.setTitle("Blackjack");
-        stage.setScene(scene);
-        stage.show();
+        ui = new Scene(bp, length, width);
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    public void displayHand(Person p) {
+
+    }
+
+    public void displayPot(Person p) {
+
+    }
+
+    public Rectangle displayCard(Card c) {
+        Rectangle card = new Rectangle();
+        return card;
+    }
+
+    public Scene getUi() {
+        return ui;
     }
 }
