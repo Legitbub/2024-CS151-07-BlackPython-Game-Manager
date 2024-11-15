@@ -1,11 +1,9 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
-
-import java.awt.*;
 
 public class BlackjackUI extends Application {
 
@@ -17,6 +15,7 @@ public class BlackjackUI extends Application {
         VBox cpu1 = new VBox();
         VBox cpu2 = new VBox();
 
+        // Bottom of screen for user interaction
         TextField betEntry = new TextField();
         betEntry.setPromptText("$0");
         Button betButton = new Button("Bet");
@@ -24,11 +23,16 @@ public class BlackjackUI extends Application {
         HBox bet = new HBox(betEntry, betButton);
         HBox player = new HBox(240, hand, bet);
 
+        Font labelFont = new Font("Comic Sans MS", 80);
+        Label gameLabel = new Label("Blackjack,\nprobably");
+        gameLabel.setFont(labelFont);
+
         BorderPane bp = new BorderPane();
         bp.setTop(dealer);
         bp.setLeft(cpu1);
         bp.setRight(cpu2);
         bp.setBottom(player);
+        bp.setCenter(gameLabel);
 
         Scene scene = new Scene(bp, DEFAULT_WINDOW_LENGTH, DEFAULT_WINDOW_WIDTH);
 
