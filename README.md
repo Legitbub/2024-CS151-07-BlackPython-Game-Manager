@@ -5,7 +5,11 @@ We will be using splitting each game into its own file, which will then be handl
 by a gameManager class to run the application.
 
 Contributions:
-  Justin: Blackjack
-  Josh: Blackjack
-  Bao: Snake
-  Vats: Snake
+
+    Justin: Blackjack
+
+    Josh: Blackjack
+
+    Bao: Snake
+
+    Vats: Snake
