@@ -1,0 +1,11 @@
+{
+    "java.project.sourcePaths": [
+        "src",
+        "lib",
+        "C:/Users/vatsm/Downloads/openjfx-21.0.5_windows-x64_bin-sdk/javafx-sdk-21.0.5/lib"
+    ],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib/*.jar"
+    ]
+}
