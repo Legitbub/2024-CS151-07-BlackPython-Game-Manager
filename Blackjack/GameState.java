@@ -48,7 +48,7 @@ public class GameState{
         return people;
     }
 
-    public ArrayList<Player> getPlayers(){
+    public ArrayList<Player> getPlayers() {
         return new ArrayList<>(Arrays.asList((Player) people.get(0),(Player) people.get(0), 
             (Player) people.get(0)));
     }

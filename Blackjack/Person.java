@@ -2,9 +2,10 @@ package Blackjack;
 
 import Blackjack.Card.Value;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public abstract class Person{
-    protected float balance;
+    protected int balance;
     protected ArrayList<Card> hand;
     protected GameState game;
 
@@ -14,18 +15,18 @@ public abstract class Person{
         hand = new ArrayList<>();
     }
 
-    public Person(GameState game, float balance, ArrayList<Card> hand){
+    public Person(GameState game, int balance, ArrayList<Card> hand){
         this.game = game;
         this.balance = balance;
         this.hand = hand;
     }
 
     //getters and setters
-    public float getBalance(){
+    public int getBalance(){
         return balance;
     }
 
-    public void setBalance(float balance){
+    public void setBalance(int balance){
         this.balance = balance;
     }
 
@@ -37,11 +38,16 @@ public abstract class Person{
         this.hand = hand;
     }
 
+    // Called in between rounds to start a new round of blackjack
+    public void resetHand() {
+        hand.clear();
+    }
+
     //method for player to take their turn
     public abstract void takeTurn();
     
     //make changes to player's balance
-    public void adjustBalance(float amount){
+    public void adjustBalance(int amount){
         balance += amount;
     }
 

@@ -1,5 +1,5 @@
-package Blackjack;
-
+import Blackjack.BlackjackUI;
+import Blackjack.BJGame;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -13,9 +13,12 @@ public class GameManager extends Application {
 
     @Override
     public void start(Stage stage) {
-        BlackjackUI blackjack = new BlackjackUI(DEFAULT_WINDOW_LENGTH, DEFAULT_WINDOW_WIDTH);
+        BlackjackUI.makeUI(DEFAULT_WINDOW_LENGTH,
+                DEFAULT_WINDOW_WIDTH);
+        BJGame.playRound();
+
         stage.setTitle("Let's play some Games!");
-        stage.setScene(blackjack.getUi());
+        stage.setScene(BlackjackUI.getUi());
         stage.show();
     }
 }

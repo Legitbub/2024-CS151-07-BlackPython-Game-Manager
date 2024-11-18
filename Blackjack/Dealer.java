@@ -6,13 +6,13 @@ public class Dealer extends Person {
     }
 
     //recieve money from another player
-    public void charge(Person p, float amount){
+    public void charge(Person p, int amount){
         p.adjustBalance(-amount);
         adjustBalance(amount);
     }
 
     //give money to another player
-    public void pay(Person p, float amount){
+    public void pay(Person p, int amount){
         p.adjustBalance(amount);
         adjustBalance(-amount);
     }

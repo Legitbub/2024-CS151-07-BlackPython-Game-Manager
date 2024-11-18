@@ -1,14 +1,13 @@
-/*
 package Blackjack;
 
-public class Main {
-    public static GameState game = new GameState();
-    public static void main(String[] args) {
+public class BJGame {
+    private static GameState game = new GameState();
 
-    }
-
-    //go through one round: each player makes a bet,  everyone recieves their cards, everyone takes their turn
-    private void playRound(){
+    //go through one round: each player makes a bet, everyone receives their cards, everyone takes their turn
+    public static void playRound() {
+        for (Person p : game.getPeople()) {
+            p.resetHand();
+        }
         makeBets();
         deal();
         takeTurns();
@@ -16,35 +15,38 @@ public class Main {
         game.getDeck().newDeck();
     }
 
-    */
 /* each player (excluding the dealer) makes a bet
     Note: I'm currently unsure how were going to get the user input. For now as a placeholder I'm just setting the
-    bets to a constant value, but this will need to be changed later *//*
+    bets to a constant value, but this will need to be changed later */
 
-    private void makeBets(){
-        for(Player p : game.getPlayers()){
+    private static void makeBets() {
+        for(Player p : game.getPlayers()) {
+            if (!(p instanceof User))
             p.setBet(10);
         }
     }
 
     //called at round start, deal to each person
-    private void deal(){
+    private static void deal() {
         //in blackjack, each player is dealt one card at a time. unnecessary here but added for realism
         for(int i = 0; i < 2; i++){
-            for(Person p : game.getPeople()){
+            for(Person p : game.getPeople()) {
                 p.getHand().add(game.getDeck().draw());
             }
+        }
+        for(Person p : game.getPeople()) {
+            BlackjackUI.displayHand(p);
         }
     }
 
     //each person takes their turn
-    private void takeTurns(){
+    private static void takeTurns(){
         for(Person p : game.getPeople()){
             p.takeTurn();
         }
     }    
     
-    private void calculateEarnings(){
+    private static void calculateEarnings(){
         Dealer dealer = game.getDealer();
         for(Player p : game.getPlayers()){
             int playerHandValue = p.calculateHandValue();
@@ -61,6 +63,7 @@ public class Main {
             }
         }
     }
-    
+    public static GameState getGame() {
+        return game;
+    }
 }
-*/
