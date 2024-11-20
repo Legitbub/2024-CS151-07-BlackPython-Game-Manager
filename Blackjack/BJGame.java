@@ -1,3 +1,7 @@
+/**
+ * Handles backend logic for Blackjack game
+ */
+
 package Blackjack;
 
 public class BJGame {
@@ -10,6 +14,10 @@ public class BJGame {
         }
         makeBets();
         deal();
+    }
+
+    // The round will continue after the user's turn is over (they bust or stay)
+    public static void playRestOfRound() {
         takeTurns();
         calculateEarnings();
         game.getDeck().newDeck();
@@ -21,8 +29,9 @@ public class BJGame {
 
     private static void makeBets() {
         for(Player p : game.getPlayers()) {
-            if (!(p instanceof User))
-            p.setBet(10);
+            if (!(p instanceof User)) {
+                p.setBet(10);
+            }
         }
     }
 
@@ -39,25 +48,30 @@ public class BJGame {
         }
     }
 
-    //each person takes their turn
-    private static void takeTurns(){
-        for(Person p : game.getPeople()){
-            p.takeTurn();
+    // CPU players go after the User
+    // User turn is over when either they bust or Stay button is clicked
+    private static void takeTurns() {
+        for(Person p : game.getPeople()) {
+            if (!(p instanceof User)) {
+                while (!p.turnEnd) {
+                    p.takeTurn();
+                }
+            }
         }
     }    
     
-    private static void calculateEarnings(){
+    private static void calculateEarnings() {
         Dealer dealer = game.getDealer();
-        for(Player p : game.getPlayers()){
+        for(Player p : game.getPlayers()) {
             int playerHandValue = p.calculateHandValue();
             int dealerHandValue = game.getDealer().calculateHandValue();
-            if(p.getHand().size() == 2 && playerHandValue == 21){
+            if (p.getHand().size() == 2 && playerHandValue == 21) {
                 //if blackjack, player earns double their bet
                 dealer.pay(p, p.getBet() * 2);
-            }else if (playerHandValue > dealerHandValue){
+            } else if (playerHandValue > dealerHandValue) {
                 //player's hand is higher than dealer's- player earns their bet amount
                 dealer.pay(p, p.getBet());
-            }else{
+            } else {
                 //player's hand is lower than dealer's- player loses their bet amount
                 dealer.charge(p, p.getBet());
             }

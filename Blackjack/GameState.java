@@ -24,7 +24,7 @@ public class GameState{
     }
 
     //getters and setters
-    public Deck getDeck(){
+    public Deck getDeck() {
         return deck;
     }
 

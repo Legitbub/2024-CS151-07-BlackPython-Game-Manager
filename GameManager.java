@@ -4,8 +4,8 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class GameManager extends Application {
-    private final double DEFAULT_WINDOW_LENGTH = 800;
-    private final double DEFAULT_WINDOW_WIDTH = 600;
+    private final double DEFAULT_WINDOW_LENGTH = 1240;
+    private final double DEFAULT_WINDOW_WIDTH = 780;
 
     public static void main(String[] args) {
         launch(args);
