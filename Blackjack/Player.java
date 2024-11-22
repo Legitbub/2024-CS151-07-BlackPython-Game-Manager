@@ -3,7 +3,7 @@ package Blackjack;
 import java.util.ArrayList;
 
 public abstract class Player extends Person {
-    protected int bet;
+    private int bet;
 
     public Player(GameState game) {
         super(game);

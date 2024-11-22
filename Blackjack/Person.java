@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public abstract class Person {
-    protected int balance;
-    protected ArrayList<Card> hand;
-    protected GameState game;
+    private int balance;
+    private ArrayList<Card> hand;
+    GameState game;
     protected boolean turnEnd = false;
+    protected boolean bust = false;
 
     public Person(GameState game) {
         this.game = game;

@@ -29,7 +29,7 @@ public class BJGame {
 
     private static void makeBets() {
         for(Player p : game.getPlayers()) {
-            if (!(p instanceof User)) {
+            if (p instanceof AutomatedPlayer) {
                 p.setBet(10);
             }
         }
@@ -57,6 +57,7 @@ public class BJGame {
                     p.takeTurn();
                 }
             }
+            BlackjackUI.displayHand(p);
         }
     }    
     
@@ -68,10 +69,13 @@ public class BJGame {
             if (p.getHand().size() == 2 && playerHandValue == 21) {
                 //if blackjack, player earns double their bet
                 dealer.pay(p, p.getBet() * 2);
-            } else if (playerHandValue > dealerHandValue) {
+            } else if ((dealer.bust && !(p.bust)) ||
+                    (!(dealer.bust) && !(p.bust) &&
+                            (playerHandValue > dealerHandValue))) {
                 //player's hand is higher than dealer's- player earns their bet amount
                 dealer.pay(p, p.getBet());
-            } else {
+            } else if ((!(dealer.bust) && !(p.bust) &&
+                    (playerHandValue < dealerHandValue))) {
                 //player's hand is lower than dealer's- player loses their bet amount
                 dealer.charge(p, p.getBet());
             }
