@@ -28,9 +28,9 @@ public class Card {
         EIGHT(8),
         NINE(9),
         TEN(10),
-        JACK(11),
-        QUEEN(12),
-        KING(13),
+        JACK(10),
+        QUEEN(10),
+        KING(10),
         ACE(1);
 
         private final int numericValue;
@@ -51,6 +51,6 @@ public class Card {
 
     @Override
     public String toString() {
-        return value + "of " + suit;
+        return value + "\n   of\n" + suit;
     }
 }
