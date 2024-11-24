@@ -12,9 +12,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.geometry.Pos;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlackjackUI {
     private static Scene ui;
@@ -45,6 +49,16 @@ public class BlackjackUI {
         HBox player = new HBox(100, hand, bet);
         VBox playerArea = new VBox(player);
 
+        // Store regions in a list for easy loop access
+        ArrayList<VBox> areas = new ArrayList<>();
+        areas.add(playerArea);
+        areas.add(cpu1Area);
+        areas.add(cpu2Area);
+        areas.add(dealerArea);
+
+        // Button to start next round after round finishes
+        Button replay = new Button("Play Again");
+
         // Force the field to be numeric only
         // Lambda expression enforces ChangeListener<String> in javafx.beans
         betEntry.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -61,30 +75,54 @@ public class BlackjackUI {
             } catch (NumberFormatException ex) {
 
             }
+            if (betAmount > game.getUser().getBalance()) {
+
+            }
             betEntry.clear();
-            BJGame.getGame().getUser().setBet(betAmount);
+            game.getUser().setBet(betAmount);
             curBet.setText("Bet: $" + game.getUser().getBet());
         });
 
         // Generate a new card for user when Hit is pressed
         hit.setOnAction(e -> {
-            if (!game.getUser().turnEnd) {
+            if (!(game.getUser().turnEnd)) {
                 game.getUser().takeTurn();
                 displayHand(game.getUser());
+                if (game.getUser().turnEnd) {
+                    BJGame.playRestOfRound();
+                    playerArea.getChildren().add(replay);
+                }
+                bankroll.setText("Bankroll: $" + game.getUser().getBalance());
             }
-            if (game.getUser().turnEnd) {
-                BJGame.playRestOfRound();
-            }
-            bankroll.setText("Bankroll: $" + game.getUser().getBalance());
         });
 
         // End the User's turn; let other players take turns
         stay.setOnAction(e -> {
             if (!game.getUser().turnEnd) {
                 BJGame.playRestOfRound();
+                game.getUser().turnEnd = true;
+                bankroll.setText("Bankroll: $" + game.getUser().getBalance());
+                playerArea.getChildren().add(replay);
             }
-            game.getUser().turnEnd = true;
-            bankroll.setText("Bankroll: $" + game.getUser().getBalance());
+        });
+
+        // Reset everything when replay button is clicked
+        replay.setOnAction(e -> {
+            playerArea.getChildren().removeLast();
+            for (int i = 0; i < game.getPeople().size(); i++) {
+                if (game.getPeople().get(i).bust) {
+                    if (i == 0) {
+                        areas.get(i).getChildren().removeFirst();
+                    } else {
+                        areas.get(i).getChildren().removeLast();
+                    }
+                    game.getPeople().get(i).bust = false;
+                }
+                game.getPeople().get(i).turnEnd = false;
+            }
+            game.startRound();
+            game.getDeck().newDeck();
+            BJGame.playRound();
         });
 
         Font labelFont = new Font("Comic Sans MS", 70);
@@ -125,9 +163,12 @@ public class BlackjackUI {
             StackPane cardImage = displayCard(c);
             curPlayer.getChildren().add(cardImage);
         }
+        printBust(p, curPlayer);
+    }
 
-        // Add a bust message if player is over 21 and
-        // does not already have a bust message
+    // Add a bust message if player is over 21 and
+    // does not already have a bust message
+    public static void printBust(Person p, HBox curPlayer) {
         if (p.turnEnd && p.calculateHandValue() > 21) {
             p.bust = true;
             Label bustMessage = new Label("BUSTED!");
@@ -146,15 +187,14 @@ public class BlackjackUI {
         }
     }
 
-    public static void displayPot(Person p) {
-
-    }
-
     // Renders a basic card representation
     public static StackPane displayCard(Card c) {
         Rectangle border = new Rectangle(100, 130);
         border.setStyle("-fx-fill: white; -fx-stroke: black; -fx-stroke-width: 3;");
         Label cardName = new Label(c.toString());
+        if (c.getSuit() == Card.Suit.DIAMONDS || c.getSuit() == Card.Suit.HEARTS) {
+            cardName.setTextFill(Color.RED);
+        }
         return new StackPane(border, cardName);
     }
 

@@ -13,7 +13,7 @@ public abstract class Person {
 
     public Person(GameState game) {
         this.game = game;
-        balance = 0;
+        balance = 100;
         hand = new ArrayList<>();
     }
 
@@ -61,17 +61,21 @@ public abstract class Person {
     //sum values of cards in hand
     public int calculateHandValue() {
         int value = 0;
+        int aceValue = 0;
+        int aceCount = 0;
         for(Card c : hand) {
             if (c.getValue() != Value.ACE) {
                 value += c.getValue().getNumericValue();
             } else {
                 //for ace- 11 if the value would still be less than 21, 1 otherwise
-                if (value < 10) {
-                    value += 11;
-                } else {
-                    value++;
-                }
+                aceValue += 11;
+                aceCount++;
             }
+        }
+        value += aceValue;
+        while (value > 21 && aceCount > 0) {
+            value -= 10;
+            aceCount--;
         }
         return value;
     }

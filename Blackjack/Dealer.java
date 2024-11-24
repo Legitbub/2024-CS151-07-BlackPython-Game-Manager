@@ -5,7 +5,7 @@ public class Dealer extends Person {
         super(game);
     }
 
-    //recieve money from another player
+    //receive money from another player
     public void charge(Person p, int amount) {
         p.adjustBalance(-amount);
         adjustBalance(amount);
