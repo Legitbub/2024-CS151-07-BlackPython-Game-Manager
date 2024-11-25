@@ -1,18 +1,30 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class ScoreManager {
     
     private int score;
     private int highScore;
+    private static final String HIGH_SCORE_FILE = "highscore.txt";
+
 
     public ScoreManager(){
         this.score = 0;
-        this.highScore = 0;
+        this.highScore = loadHighScore();
     }
     //increment score for every food eaten
-    //update new high score if current score is higher
     public void incrementScore(int amount){
         score += amount;
-        if(score > highScore){
+    }
+    //update new high score if current score is higher
+    //save high score to the txt file to store the high score for future games.
+    public void updateHighScore() {
+        if (score > highScore) {
             highScore = score;
+            saveHighScore();
         }
     }
 
@@ -27,5 +39,21 @@ public class ScoreManager {
 
     public int getHighScore(){
         return highScore;
+    }
+
+    private int loadHighScore() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_FILE))) {
+            return Integer.parseInt(reader.readLine());
+        } catch (IOException | NumberFormatException e) {
+            return 0; // Default high score if file is missing or invalid
+        }
+    }
+
+    private void saveHighScore() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(HIGH_SCORE_FILE))) {
+            writer.write(String.valueOf(highScore));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

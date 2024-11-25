@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "GUI",
+            "request": "launch",
+            "mainClass": "GUI",
+            "projectName": "2024-CS151-07-BlackPython-Game-Manager_fedbea5"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
