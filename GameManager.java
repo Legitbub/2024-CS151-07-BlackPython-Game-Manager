@@ -1,5 +1,6 @@
 import Blackjack.BlackjackUI;
 import Blackjack.BJGame;
+import Snakes.SnakeUI;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -37,7 +38,7 @@ public class GameManager extends Application {
         });
 
         snakeLaunch.setOnAction(e -> {
-
+            //SnakeUI.main(new String[1]);
         });
     }
 }

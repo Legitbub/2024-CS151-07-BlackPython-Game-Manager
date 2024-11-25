@@ -13,8 +13,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.geometry.Pos;
-
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class BlackjackUI {
     private static Scene ui;
@@ -141,7 +143,34 @@ public class BlackjackUI {
         // Button to save the state of the game into a string
         Button save = new Button("Save");
         save.setOnAction(e -> {
-
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent saveString = new ClipboardContent();
+            StringBuilder str = new StringBuilder();
+            str.append(game.getUser().getBalance()).append(",");
+            str.append(game.getUser().getBet()).append("UC");
+            for (Card c : game.getUser().getHand()) {
+                str.append(c.getValue() + " " + c.getSuit() + "UC");
+            }
+            str.append("P1");
+            for (Card c : game.getP1().getHand()) {
+                str.append(c.getValue() + " " + c.getSuit() + "P1");
+            }
+            str.append("P2");
+            for (Card c : game.getP2().getHand()) {
+                str.append(c.getValue() + " " + c.getSuit() + "P2");
+            }
+            str.append("DL");
+            for (Card c : game.getDealer().getHand()) {
+                str.append(c.getValue() + " " + c.getSuit() + "DL");
+            }
+            str.append("DCK");
+            Stack<Card> deckCopy = (Stack<Card>) game.getDeck().getDeck().clone();
+            while (!deckCopy.isEmpty()) {
+                Card c = deckCopy.pop();
+                str.append(c.getValue() + " " + c.getSuit() + "DCK");
+            }
+            saveString.putString(str.toString());
+            clipboard.setContent(saveString);
         });
 
         StackPane sp = new StackPane(bp, save);
