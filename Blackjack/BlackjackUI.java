@@ -8,17 +8,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.geometry.Pos;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class BlackjackUI {
     private static Scene ui;
@@ -59,7 +55,7 @@ public class BlackjackUI {
         // Button to start next round after round finishes
         Button replay = new Button("Play Again");
 
-        // Force the field to be numeric only
+        // Force the bet field to be numeric only
         // Lambda expression enforces ChangeListener<String> in javafx.beans
         betEntry.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
@@ -141,12 +137,21 @@ public class BlackjackUI {
         player.setAlignment(Pos.CENTER);
         playerArea.setAlignment(Pos.CENTER);
         bp.setCenter(gameLabel);
-        ui = new Scene(bp, length, width);
+
+        // Button to save the state of the game into a string
+        Button save = new Button("Save");
+        save.setOnAction(e -> {
+
+        });
+
+        StackPane sp = new StackPane(bp, save);
+        StackPane.setAlignment(save, Pos.TOP_RIGHT);
+        ui = new Scene(sp, length, width);
     }
 
     // Show the cards in each player's hand
     public static void displayHand(Person p) {
-        BorderPane bp = (BorderPane) ui.getRoot();
+        BorderPane bp = (BorderPane) ui.getRoot().getChildrenUnmodifiable().getFirst();
         HBox curPlayer;
         if (p == game.getDealer()) {
             curPlayer = (HBox) ((VBox) (bp.getTop())).getChildren().get(0);
