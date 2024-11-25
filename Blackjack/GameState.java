@@ -3,7 +3,7 @@ package Blackjack;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class GameState{
+public class GameState {
     private Deck deck;
     private User user;
     private Dealer dealer;
@@ -11,9 +11,10 @@ public class GameState{
     private AutomatedPlayer p2;
     private ArrayList<Person> people;
     private int currentPlayer;
+    private boolean roundEnd = false;
 
-    //default start to new game. All players have balances of 0 and no cards. User will always go first.
-    public GameState(){
+    //default start to new game. All players have balances of 100 and no cards. User will always go first.
+    public GameState() {
         deck = new Deck();
         user = new User(this);
         dealer = new Dealer(this);
@@ -24,7 +25,7 @@ public class GameState{
     }
 
     //getters and setters
-    public Deck getDeck(){
+    public Deck getDeck() {
         return deck;
     }
 
@@ -48,9 +49,9 @@ public class GameState{
         return people;
     }
 
-    public ArrayList<Player> getPlayers(){
-        return new ArrayList<>(Arrays.asList((Player) people.get(0),(Player) people.get(0), 
-            (Player) people.get(0)));
+    public ArrayList<Player> getPlayers() {
+        return new ArrayList<>(Arrays.asList((Player) people.get(0),(Player) people.get(1),
+            (Player) people.get(2)));
     }
 
     public int getCurrentPlayer() {
@@ -61,4 +62,15 @@ public class GameState{
         this.currentPlayer = currentPlayer;
     }
 
+    public boolean isRoundEnd() {
+        return roundEnd;
+    }
+
+    public void endRound() {
+        roundEnd = true;
+    }
+
+    public void startRound() {
+        roundEnd = false;
+    }
 }
