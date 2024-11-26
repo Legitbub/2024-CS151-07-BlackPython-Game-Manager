@@ -34,6 +34,7 @@ public class BJGame {
         for(Person p : game.getPeople()) {
             BlackjackUI.displayHand(p);
         }
+        BlackjackUI.hideDealerCard();
     }
 
     // CPU players go after the User

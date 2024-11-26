@@ -232,6 +232,13 @@ public class BlackjackUI {
         return new StackPane(border, cardName);
     }
 
+    public static void hideDealerCard() {
+        BorderPane bp = (BorderPane) ui.getRoot().getChildrenUnmodifiable().getFirst();
+        HBox dealerHand = (HBox) ((VBox) bp.getTop()).getChildren().getFirst();
+        StackPane card = (StackPane) dealerHand.getChildren().getLast();
+        ((Label) card.getChildren().getLast()).setText("HIDDEN CARD");
+    }
+
     public static Scene getUi() {
         return ui;
     }
