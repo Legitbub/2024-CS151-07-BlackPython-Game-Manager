@@ -13,6 +13,8 @@ import java.io.*;
 import java.util.*;
 
 public class GameManager extends Application {
+    private final double DEFAULT_WINDOW_LENGTH = 1240;
+    private final double DEFAULT_WINDOW_WIDTH = 780;
     private final String USERS_FILE = "user_accounts.txt";
     private final String HIGH_SCORES_FILE = "high_scores.txt";
     private Map<String, String> userAccounts = new HashMap<>();
@@ -167,6 +169,10 @@ public class GameManager extends Application {
     private void launchBlackjack(String username) {
         // Placeholder for Blackjack integration
         System.out.println("Launching Blackjack for " + username);
+        BlackjackUI.makeUI(DEFAULT_WINDOW_LENGTH,
+            DEFAULT_WINDOW_WIDTH);
+        BJGame.playRound();
+        mainStage.setScene(BlackjackUI.getUi());
     }
 
     private void launchSnake(String username) {
