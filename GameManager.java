@@ -1,5 +1,6 @@
 import Blackjack.BlackjackUI;
 import Blackjack.BJGame;
+import Snakes.SnakeUI;
 
 
 import javafx.application.Application;
@@ -28,6 +29,7 @@ public class GameManager extends Application {
 
     @Override
     public void start(Stage stage) {
+
         mainStage = stage;
         loadUserAccounts();
         loadHighScores();
@@ -228,5 +230,27 @@ public class GameManager extends Application {
         } catch (IOException e) {
             System.out.println("Error saving high scores.");
         }
+=======
+        Button blackjackLaunch = new Button("Blackjack");
+        Button snakeLaunch = new Button("Snake");
+        HBox gameButtons = new HBox(blackjackLaunch, snakeLaunch);
+        StackPane gameSelect = new StackPane(gameButtons);
+        gameButtons.setAlignment(Pos.CENTER);
+
+        Scene mainMenu = new Scene(gameSelect, DEFAULT_WINDOW_LENGTH, DEFAULT_WINDOW_WIDTH);
+        stage.setTitle("Let's play some Games!");
+        stage.setScene(mainMenu);
+        stage.show();
+
+        blackjackLaunch.setOnAction(e -> {
+            BlackjackUI.makeUI(DEFAULT_WINDOW_LENGTH,
+                    DEFAULT_WINDOW_WIDTH);
+            BJGame.playRound();
+            stage.setScene(BlackjackUI.getUi());
+        });
+
+        snakeLaunch.setOnAction(e -> {
+            //SnakeUI.main(new String[1]);
+        });
     }
 }
