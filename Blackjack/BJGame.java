@@ -7,12 +7,12 @@ package Blackjack;
 public class BJGame {
     private static GameState game = new GameState();
 
-    //go through one round: each player makes a bet, everyone receives their cards, everyone takes their turn
+    // Go through one round: each player makes a bet (handled by constructor),
+    // everyone receives their cards, everyone takes their turn
     public static void playRound() {
         for (Person p : game.getPeople()) {
             p.resetHand();
         }
-        makeBets();
         deal();
     }
 
@@ -20,19 +20,7 @@ public class BJGame {
     public static void playRestOfRound() {
         takeTurns();
         calculateEarnings();
-        game.getDeck().newDeck();
-    }
-
-/* each player (excluding the dealer) makes a bet
-    Note: I'm currently unsure how were going to get the user input. For now as a placeholder I'm just setting the
-    bets to a constant value, but this will need to be changed later */
-
-    private static void makeBets() {
-        for(Player p : game.getPlayers()) {
-            if (!(p instanceof User)) {
-                p.setBet(10);
-            }
-        }
+        game.endRound();
     }
 
     //called at round start, deal to each person
@@ -46,6 +34,7 @@ public class BJGame {
         for(Person p : game.getPeople()) {
             BlackjackUI.displayHand(p);
         }
+        BlackjackUI.hideDealerCard();
     }
 
     // CPU players go after the User
@@ -57,6 +46,7 @@ public class BJGame {
                     p.takeTurn();
                 }
             }
+            BlackjackUI.displayHand(p);
         }
     }    
     
@@ -64,14 +54,19 @@ public class BJGame {
         Dealer dealer = game.getDealer();
         for(Player p : game.getPlayers()) {
             int playerHandValue = p.calculateHandValue();
-            int dealerHandValue = game.getDealer().calculateHandValue();
-            if (p.getHand().size() == 2 && playerHandValue == 21) {
+            int dealerHandValue = dealer.calculateHandValue();
+            boolean isBlackjack = (p.getHand().size() == 2 && playerHandValue == 21);
+            boolean dBlackjack = (dealer.getHand().size() == 2 && dealerHandValue == 21);
+            if (isBlackjack && !dBlackjack) {
                 //if blackjack, player earns double their bet
                 dealer.pay(p, p.getBet() * 2);
-            } else if (playerHandValue > dealerHandValue) {
+            } else if ((dealer.bust && !(p.bust)) ||
+                    (!(dealer.bust) && !(p.bust) &&
+                            (playerHandValue > dealerHandValue))) {
                 //player's hand is higher than dealer's- player earns their bet amount
                 dealer.pay(p, p.getBet());
-            } else {
+            } else if (!dealer.bust && p.bust ||
+                    !dealer.bust && playerHandValue < dealerHandValue) {
                 //player's hand is lower than dealer's- player loses their bet amount
                 dealer.charge(p, p.getBet());
             }

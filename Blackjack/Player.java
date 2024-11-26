@@ -3,11 +3,11 @@ package Blackjack;
 import java.util.ArrayList;
 
 public abstract class Player extends Person {
-    protected int bet;
+    private int bet;
 
     public Player(GameState game) {
         super(game);
-        bet = 0;
+        bet = 10;           // Default bet
     }
 
     public Player(GameState game, int balance, ArrayList<Card> hand, int bet) {

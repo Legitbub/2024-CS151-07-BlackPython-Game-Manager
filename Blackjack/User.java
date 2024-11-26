@@ -11,6 +11,7 @@ public class User extends Player {
         hit();
         if (calculateHandValue() > 21) {
             turnEnd = true;
+            bust = true;
         }
     }
 }
