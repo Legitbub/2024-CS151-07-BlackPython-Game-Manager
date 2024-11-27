@@ -1,3 +1,5 @@
+package Snakes;
+
 import java.util.List;
 import java.util.Random;
 

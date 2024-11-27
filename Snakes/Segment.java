@@ -1,3 +1,5 @@
+package Snakes;
+
 public class Segment {
     private int x;
     private int y;

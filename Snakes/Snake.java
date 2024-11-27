@@ -1,3 +1,5 @@
+package Snakes;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -44,7 +46,7 @@ public class Snake {
         return direction;
     }
 
-    //Move the snake by calculating the new position of the snake's head based on its current direciton and adding to its head
+    //Move the snake by calculating the new position of the snake's head based on its current direction and adding to its head
     public void moveSnake() {
         Segment head = segments.get(0);
         int newX = head.getX();

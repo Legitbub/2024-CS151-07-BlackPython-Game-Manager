@@ -1,13 +1,13 @@
+package Snakes;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class UI extends Application {
+public class SnakeUI extends Application {
     private static final int WIDTH = 20;  
     private static final int HEIGHT = 20; 
     private boolean isPaused = false;
