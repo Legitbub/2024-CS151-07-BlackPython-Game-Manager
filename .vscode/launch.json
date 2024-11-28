@@ -9,6 +9,14 @@
     "configurations": [
         {
             "type": "java",
+            "name": "SnakeUI",
+            "request": "launch",
+            "vmArgs": "--module-path /Users/vutran/Downloads/javafx-sdk-23.0.1/lib --add-modules javafx.controls,javafx.fxml",
+            "mainClass": "Snakes.SnakeUI",
+            "projectName": "2024-CS151-07-BlackPython-Game-Manager_fedbea5"
+        },
+        {
+            "type": "java",
             "name": "Runner",
             "request": "launch",
             "mainClass": "Runner",
@@ -35,15 +43,6 @@
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "UI",
-            "request": "launch",
-            "mainClass": "UI",
-            "vmArgs": "--module-path /Users/vutran/Downloads/javafx-sdk-23.0.1/lib --add-modules javafx.controls,javafx.fxml",
-            "projectName": "2024-CS151-07-BlackPython-Game-Manager_fedbea5"
         }
-
-]
+    ]
 }

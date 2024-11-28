@@ -181,6 +181,9 @@ public class GameManager extends Application {
     private void launchSnake(String username) {
         // Placeholder for Snake integration
         System.out.println("Launching Snake for " + username);
+        Scene snakeScene = SnakeUI.createSnakeGame(mainStage);
+        mainStage.setScene(snakeScene);
+        
     }
 
     private void loadUserAccounts() {
