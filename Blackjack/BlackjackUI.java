@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -24,6 +25,7 @@ public class BlackjackUI {
 
     // Initial layout of the Blackjack game
     public static void makeUI(double length, double width) {
+        // Screen areas of each player
         HBox dealerHand = new HBox();
         VBox dealerArea = new VBox(dealerHand);
         HBox cpu1Hand = new HBox();
@@ -41,10 +43,10 @@ public class BlackjackUI {
         Button hit = new Button("Hit");
         Button stay = new Button("Stay");
         HBox cardActions = new HBox(50, hit, stay);
-        HBox hand = new HBox();
+        HBox playerHand = new HBox();
         HBox betTop = new HBox(betEntry, betButton);
         VBox bet = new VBox(20, betTop, moneyStats, cardActions);
-        HBox player = new HBox(100, hand, bet);
+        HBox player = new HBox(100, playerHand, bet);
         VBox playerArea = new VBox(player);
 
         // Store regions in a list for easy loop access
@@ -127,6 +129,7 @@ public class BlackjackUI {
         Label gameLabel = new Label("Blackjack,\nprobably");
         gameLabel.setFont(labelFont);
 
+        // Set up display positions of each player area
         BorderPane bp = new BorderPane();
         bp.setTop(dealerArea);
         dealerHand.setAlignment(Pos.CENTER);
@@ -173,14 +176,22 @@ public class BlackjackUI {
             clipboard.setContent(saveString);
         });
 
-        StackPane sp = new StackPane(bp, save);
-        StackPane.setAlignment(save, Pos.TOP_RIGHT);
-        ui = new Scene(sp, length, width);
+        Button mainMenu = new Button("Main Menu");
+        mainMenu.setOnAction(e -> {
+            
+        });
+        ToolBar toolBar = new ToolBar(mainMenu);
+        toolBar.getItems().add(save);
+
+        BorderPane b = new BorderPane();
+        b.setTop(toolBar);
+        b.setCenter(bp);
+        ui = new Scene(b, length, width);
     }
 
     // Show the cards in each player's hand
     public static void displayHand(Person p) {
-        BorderPane bp = (BorderPane) ui.getRoot().getChildrenUnmodifiable().getFirst();
+        BorderPane bp = (BorderPane) ((BorderPane) ui.getRoot()).getCenter();
         HBox curPlayer;
         if (p == game.getDealer()) {
             curPlayer = (HBox) ((VBox) (bp.getTop())).getChildren().get(0);
@@ -233,10 +244,11 @@ public class BlackjackUI {
     }
 
     public static void hideDealerCard() {
-        BorderPane bp = (BorderPane) ui.getRoot().getChildrenUnmodifiable().getFirst();
+        BorderPane bp = (BorderPane) ((BorderPane) ui.getRoot()).getCenter();
         HBox dealerHand = (HBox) ((VBox) bp.getTop()).getChildren().getFirst();
         StackPane card = (StackPane) dealerHand.getChildren().getLast();
         ((Label) card.getChildren().getLast()).setText("HIDDEN CARD");
+        ((Label) card.getChildren().getLast()).setTextFill(Color.BLACK);
     }
 
     public static Scene getUi() {

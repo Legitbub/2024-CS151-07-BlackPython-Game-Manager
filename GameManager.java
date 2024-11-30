@@ -61,8 +61,6 @@ public class GameManager extends Application {
         VBox formLayout = new VBox(10);
         formLayout.setPadding(new Insets(20));
 
-  
-
         Label usernameLabel = new Label("Username:");
         TextField usernameField = new TextField();
 
@@ -72,8 +70,7 @@ public class GameManager extends Application {
         Button backButton = new Button("Back to Welcome Screen");
         Button submitButton = new Button("Log In");
         Label messageLabel = new Label();
-
-        
+        HBox buttons = new HBox(20, submitButton, backButton);
 
         submitButton.setOnAction(e -> {
             String username = usernameField.getText();
@@ -86,7 +83,8 @@ public class GameManager extends Application {
         });
 
         backButton.setOnAction(e -> showLoginScreen());
-        formLayout.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField, submitButton, messageLabel);
+        formLayout.getChildren().addAll(usernameLabel, usernameField,
+                passwordLabel, passwordField, buttons, messageLabel);
 
         Scene loginFormScene = new Scene(formLayout, 400, 300);
         mainStage.setTitle("Game Manager - Log In");
@@ -123,7 +121,10 @@ public class GameManager extends Application {
             }
         });
 
-        formLayout.getChildren().addAll(usernameLabel, usernameField, passwordLabel, passwordField, submitButton, messageLabel);
+        HBox buttons = new HBox(20, submitButton, backButton);
+
+        formLayout.getChildren().addAll(usernameLabel, usernameField,
+                passwordLabel, passwordField, buttons, messageLabel);
 
         Scene createAccountScene = new Scene(formLayout, 400, 300);
         mainStage.setTitle("Game Manager - Create Account");
@@ -180,6 +181,9 @@ public class GameManager extends Application {
     private void launchSnake(String username) {
         // Placeholder for Snake integration
         System.out.println("Launching Snake for " + username);
+        Scene snakeScene = SnakeUI.createSnakeGame(mainStage);
+        mainStage.setScene(snakeScene);
+        
     }
 
     private void loadUserAccounts() {
@@ -230,27 +234,5 @@ public class GameManager extends Application {
         } catch (IOException e) {
             System.out.println("Error saving high scores.");
         }
-=======
-        Button blackjackLaunch = new Button("Blackjack");
-        Button snakeLaunch = new Button("Snake");
-        HBox gameButtons = new HBox(blackjackLaunch, snakeLaunch);
-        StackPane gameSelect = new StackPane(gameButtons);
-        gameButtons.setAlignment(Pos.CENTER);
-
-        Scene mainMenu = new Scene(gameSelect, DEFAULT_WINDOW_LENGTH, DEFAULT_WINDOW_WIDTH);
-        stage.setTitle("Let's play some Games!");
-        stage.setScene(mainMenu);
-        stage.show();
-
-        blackjackLaunch.setOnAction(e -> {
-            BlackjackUI.makeUI(DEFAULT_WINDOW_LENGTH,
-                    DEFAULT_WINDOW_WIDTH);
-            BJGame.playRound();
-            stage.setScene(BlackjackUI.getUi());
-        });
-
-        snakeLaunch.setOnAction(e -> {
-            //SnakeUI.main(new String[1]);
-        });
     }
 }
