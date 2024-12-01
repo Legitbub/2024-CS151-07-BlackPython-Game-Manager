@@ -1,3 +1,6 @@
+
+package Manager;
+
 import Blackjack.BlackjackUI;
 import Blackjack.BJGame;
 import Snakes.SnakeUI;
@@ -21,7 +24,11 @@ public class GameManager extends Application {
     private Map<String, String> userAccounts = new HashMap<>();
     private Map<String, Integer> highScores = new TreeMap<>(Collections.reverseOrder());
 
-    private Stage mainStage;
+    public static Stage mainStage;
+    public static Scene mainMenuScene;
+    public static Scene loginScene;
+
+    private Scene snakeScene;
 
     public static void main(String[] args) {
         launch(args);
@@ -51,11 +58,11 @@ public class GameManager extends Application {
 
         loginLayout.getChildren().addAll(welcomeLabel, loginButton, createAccountButton);
 
-        Scene loginScene = new Scene(loginLayout, 400, 300);
+        loginScene = new Scene(loginLayout, 400, 300);
         mainStage.setTitle("Game Manager - Login");
         mainStage.setScene(loginScene);
         mainStage.show();
-    }
+        }
 
     private void showLoginForm() {
         VBox formLayout = new VBox(10);
@@ -131,13 +138,16 @@ public class GameManager extends Application {
         mainStage.setScene(createAccountScene);
     }
 
-    private void showMainMenu(String username) {
+    private  void showMainMenu(String username) {
         BorderPane mainLayout = new BorderPane();
 
         // Top: Toolbar
         ToolBar toolbar = new ToolBar();
         Button mainMenuButton = new Button("Main Menu");
+        Button logout = new Button("logout");
+        logout.setOnAction(e -> showLoginScreen());
         toolbar.getItems().add(mainMenuButton);
+        toolbar.getItems().add(logout);
         mainLayout.setTop(toolbar);
 
         // Left: High Scores
@@ -164,7 +174,7 @@ public class GameManager extends Application {
         gameOptionsBox.getChildren().addAll(blackjackButton, snakeButton);
         mainLayout.setCenter(gameOptionsBox);
 
-        Scene mainMenuScene = new Scene(mainLayout, 600, 400);
+        mainMenuScene = new Scene(mainLayout, 600, 400);
         mainStage.setTitle("Game Manager - Main Menu");
         mainStage.setScene(mainMenuScene);
     }
@@ -181,7 +191,7 @@ public class GameManager extends Application {
     private void launchSnake(String username) {
         // Placeholder for Snake integration
         System.out.println("Launching Snake for " + username);
-        Scene snakeScene = SnakeUI.createSnakeGame(mainStage);
+        snakeScene = SnakeUI.createSnakeGame(mainStage);
         mainStage.setScene(snakeScene);
         
     }

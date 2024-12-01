@@ -1,9 +1,13 @@
 package Snakes;
 
+import Manager.GameManager;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -38,8 +42,23 @@ public class SnakeUI{
         restartButton.setOnAction(event -> restartGame(stage, restartButton, root, gameBoard, snake, food, scoreManager));
         root.getChildren().add(restartButton);
         restartButton.setTranslateY(110);
+        
+        Button mainMenu = new Button("Main Menu");
+        mainMenu.setOnAction(e -> {
+            stage.setScene(GameManager.mainMenuScene);
+        });
+        Button logout = new Button("logout");
+        logout.setOnAction(e -> {
+            stage.setScene(GameManager.loginScene);
+        });
+        ToolBar toolBar = new ToolBar(mainMenu);
+        toolBar.getItems().add(logout);
 
-        Scene scene = new Scene(root);
+        BorderPane b = new BorderPane();
+        b.setTop(toolBar);
+        b.setCenter(root);
+
+        Scene scene = new Scene(b);
         scene.setOnKeyPressed(event -> {
             if (!isGameOver) {
                 if (event.getCode().toString().equals("ESCAPE")) {
