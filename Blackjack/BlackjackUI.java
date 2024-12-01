@@ -19,6 +19,8 @@ import javafx.scene.input.ClipboardContent;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import Manager.GameManager;
+
 public class BlackjackUI {
     private static Scene ui;
     private static GameState game = BJGame.getGame();
@@ -178,9 +180,14 @@ public class BlackjackUI {
 
         Button mainMenu = new Button("Main Menu");
         mainMenu.setOnAction(e -> {
-            
+            GameManager.mainStage.setScene(GameManager.mainMenuScene);
+        });
+        Button logout = new Button("logout");
+        logout.setOnAction(e -> {
+            GameManager.mainStage.setScene(GameManager.loginScene);
         });
         ToolBar toolBar = new ToolBar(mainMenu);
+        toolBar.getItems().add(logout);
         toolBar.getItems().add(save);
 
         BorderPane b = new BorderPane();
