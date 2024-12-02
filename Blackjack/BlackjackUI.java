@@ -4,6 +4,7 @@
 
 package Blackjack;
 
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,15 +19,67 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import java.util.ArrayList;
 import java.util.Stack;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import Manager.GameManager;
 
 public class BlackjackUI {
     private static Scene ui;
-    private static GameState game = BJGame.getGame();
+    static GameState game = BJGame.getGame();
 
+    // Ask user for save data or new game at the start
+    public static Scene saveDataEntry(double length, double width) {
+        ToolBar toolBar = makeToolbar();
+        BorderPane bp = new BorderPane();
+        bp.setTop(toolBar);
+
+        Label saveDataHeader = new Label("Save data:");
+        TextField saveData = new TextField();
+
+        Button newGame = new Button("Start new game");
+        newGame.setOnAction(e -> {
+            BJGame.setGame(new GameState());
+            game = BJGame.getGame();
+            makeUI(length, width, true);
+            GameManager.mainStage.setScene(getUi());
+        });
+
+        // Save data string is copied to clipboard when pressing
+        // the save button in a previous game
+        // Pasting this data string is necessary for the button to work
+        Button savedGame = new Button("Start game from save data string");
+        savedGame.setOnAction(e -> {
+            String data = saveData.getText();
+            String[] balance = data.split(",");
+            String[] userHand = balance[2].split("F0");
+            String[] p1Hand = userHand[1].split("F1");
+            String[] p2Hand = p1Hand[1].split("F2");
+            String[] dealHand = p2Hand[1].split("F3");
+            String[] cards = dealHand[1].split("DCK");
+            try {
+                BJGame.setGame(new GameState(Integer.parseInt(balance[0]),
+                        Integer.parseInt(balance[1]), userHand[0], p1Hand[0],
+                        p1Hand[0], dealHand[0], cards));
+                game = BJGame.getGame();
+                makeUI(length, width, false);
+                GameManager.mainStage.setScene(getUi());
+            } catch (Exception ex) {
+
+            }
+        });
+
+        VBox saveDataBox = new VBox(5, saveDataHeader, saveData);
+        HBox buttons = new HBox(30, newGame, savedGame);
+        VBox display = new VBox(30, saveDataBox, buttons);
+        display.setPadding(new Insets(40));
+        bp.setCenter(display);
+
+        Scene scene = new Scene(bp, 400, 300);
+        return scene;
+    }
     // Initial layout of the Blackjack game
-    public static void makeUI(double length, double width) {
+    public static void makeUI(double length, double width, boolean isNewGame) {
         // Screen areas of each player
         HBox dealerHand = new HBox();
         VBox dealerArea = new VBox(dealerHand);
@@ -77,12 +130,11 @@ public class BlackjackUI {
             } catch (NumberFormatException ex) {
 
             }
-            if (betAmount > game.getUser().getBalance()) {
-
+            if (betAmount <= game.getUser().getBalance()) {
+                betEntry.clear();
+                game.getUser().setBet(betAmount);
+                curBet.setText("Bet: $" + game.getUser().getBet());
             }
-            betEntry.clear();
-            game.getUser().setBet(betAmount);
-            curBet.setText("Bet: $" + game.getUser().getBet());
         });
 
         // Generate a new card for user when Hit is pressed
@@ -145,30 +197,33 @@ public class BlackjackUI {
         playerArea.setAlignment(Pos.CENTER);
         bp.setCenter(gameLabel);
 
-        // Button to save the state of the game into a string
+        ToolBar toolBar = makeToolbar();
+
+        // Button to save the state of the game into a String
+        // String is copied to clipboard for future pasting
         Button save = new Button("Save");
         save.setOnAction(e -> {
             Clipboard clipboard = Clipboard.getSystemClipboard();
             ClipboardContent saveString = new ClipboardContent();
             StringBuilder str = new StringBuilder();
             str.append(game.getUser().getBalance()).append(",");
-            str.append(game.getUser().getBet()).append("UC");
+            str.append(game.getUser().getBet()).append(",");
             for (Card c : game.getUser().getHand()) {
                 str.append(c.getValue() + " " + c.getSuit() + "UC");
             }
-            str.append("P1");
+            str.append("F0");
             for (Card c : game.getP1().getHand()) {
                 str.append(c.getValue() + " " + c.getSuit() + "P1");
             }
-            str.append("P2");
+            str.append("F1");
             for (Card c : game.getP2().getHand()) {
                 str.append(c.getValue() + " " + c.getSuit() + "P2");
             }
-            str.append("DL");
+            str.append("F2");
             for (Card c : game.getDealer().getHand()) {
                 str.append(c.getValue() + " " + c.getSuit() + "DL");
             }
-            str.append("DCK");
+            str.append("F3");
             Stack<Card> deckCopy = (Stack<Card>) game.getDeck().getDeck().clone();
             while (!deckCopy.isEmpty()) {
                 Card c = deckCopy.pop();
@@ -176,24 +231,32 @@ public class BlackjackUI {
             }
             saveString.putString(str.toString());
             clipboard.setContent(saveString);
+
+            // Notify user of successful data save
+            toolBar.getItems().add(new Label("Game data copied to clipboard!"));
+            /*Timer t = new Timer();
+            t.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    toolBar.getItems().removeLast();
+                }
+            }, 2000);*/
         });
 
-        Button mainMenu = new Button("Main Menu");
-        mainMenu.setOnAction(e -> {
-            GameManager.mainStage.setScene(GameManager.mainMenuScene);
-        });
-        Button logout = new Button("logout");
-        logout.setOnAction(e -> {
-            GameManager.mainStage.setScene(GameManager.loginScene);
-        });
-        ToolBar toolBar = new ToolBar(mainMenu);
-        toolBar.getItems().add(logout);
         toolBar.getItems().add(save);
 
         BorderPane b = new BorderPane();
         b.setTop(toolBar);
         b.setCenter(bp);
         ui = new Scene(b, length, width);
+        if (isNewGame) {
+            BJGame.playRound();
+        } else {
+            for(Person p : game.getPeople()) {
+                displayHand(p);
+            }
+            hideDealerCard();
+        }
     }
 
     // Show the cards in each player's hand
@@ -260,5 +323,21 @@ public class BlackjackUI {
 
     public static Scene getUi() {
         return ui;
+    }
+
+    // Create the basic toolbar for the menus
+    public static ToolBar makeToolbar() {
+        Button mainMenu = new Button("Main Menu");
+        mainMenu.setOnAction(e -> {
+            GameManager.mainStage.setScene(GameManager.mainMenuScene);
+        });
+        Button logout = new Button("Logout");
+        logout.setOnAction(e -> {
+            GameManager.mainStage.setScene(GameManager.loginScene);
+        });
+        ToolBar toolBar = new ToolBar(mainMenu);
+        toolBar.getItems().add(logout);
+
+        return toolBar;
     }
 }

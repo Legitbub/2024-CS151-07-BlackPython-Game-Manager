@@ -144,7 +144,7 @@ public class GameManager extends Application {
         // Top: Toolbar
         ToolBar toolbar = new ToolBar();
         Button mainMenuButton = new Button("Main Menu");
-        Button logout = new Button("logout");
+        Button logout = new Button("Logout");
         logout.setOnAction(e -> showLoginScreen());
         toolbar.getItems().add(mainMenuButton);
         toolbar.getItems().add(logout);
@@ -182,10 +182,8 @@ public class GameManager extends Application {
     private void launchBlackjack(String username) {
         // Placeholder for Blackjack integration
         System.out.println("Launching Blackjack for " + username);
-        BlackjackUI.makeUI(DEFAULT_WINDOW_LENGTH,
-            DEFAULT_WINDOW_WIDTH);
-        BJGame.playRound();
-        mainStage.setScene(BlackjackUI.getUi());
+        mainStage.setScene(BlackjackUI.saveDataEntry(DEFAULT_WINDOW_LENGTH,
+                DEFAULT_WINDOW_WIDTH));
     }
 
     private void launchSnake(String username) {
@@ -193,7 +191,6 @@ public class GameManager extends Application {
         System.out.println("Launching Snake for " + username);
         snakeScene = SnakeUI.createSnakeGame(mainStage);
         mainStage.setScene(snakeScene);
-        
     }
 
     private void loadUserAccounts() {

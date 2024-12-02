@@ -25,8 +25,8 @@ public class Deck {
     }
    
     //set deck attribute to a full shuffled deck 
-    public void newDeck(){
-        Stack<Card> newDeck = new Stack<Card>();
+    public void newDeck() {
+        Stack<Card> newDeck = new Stack<>();
         for(Card.Suit s : Card.Suit.values()){
             for(Card.Value v : Card.Value.values())
                 newDeck.push(new Card(s, v));
