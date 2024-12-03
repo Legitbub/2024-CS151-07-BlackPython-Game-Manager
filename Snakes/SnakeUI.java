@@ -46,12 +46,14 @@ public class SnakeUI{
         //set the focus of the button to false so it doesnt interfere with key events to control the snake's direction
         Button mainMenu = new Button("Main Menu");
         mainMenu.setOnAction(e -> {
+            stopGame();
             stage.setScene(GameManager.mainMenuScene);
         });
         mainMenu.setFocusTraversable(false); 
 
         Button logout = new Button("logout");
         logout.setOnAction(e -> {
+            stopGame();
             stage.setScene(GameManager.loginScene);
         });
         logout.setFocusTraversable(false); 
@@ -102,7 +104,14 @@ public class SnakeUI{
 
         return scene;
     }
-
+    //reset the timer completely so game is stopped and reseted when switching in between scenes
+    private static void stopGame(){
+        if(timer != null){
+            timer.stop();
+        }
+        isPaused = false;
+        isGameOver = false;
+    }
     //Bring up the pause menu when ESP is pressed and go back to game when ESP is pressed again
     private static void togglePause(Game gameBoard) {
         isPaused = !isPaused;
