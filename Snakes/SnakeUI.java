@@ -43,16 +43,21 @@ public class SnakeUI{
         root.getChildren().add(restartButton);
         restartButton.setTranslateY(110);
         
+        //set the focus of the button to false so it doesnt interfere with key events to control the snake's direction
         Button mainMenu = new Button("Main Menu");
         mainMenu.setOnAction(e -> {
             stage.setScene(GameManager.mainMenuScene);
         });
+        mainMenu.setFocusTraversable(false); 
+
         Button logout = new Button("logout");
         logout.setOnAction(e -> {
             stage.setScene(GameManager.loginScene);
         });
-        ToolBar toolBar = new ToolBar(mainMenu);
-        toolBar.getItems().add(logout);
+        logout.setFocusTraversable(false); 
+
+        ToolBar toolBar = new ToolBar(mainMenu, logout);
+        toolBar.setFocusTraversable(false); 
 
         BorderPane b = new BorderPane();
         b.setTop(toolBar);
