@@ -76,8 +76,9 @@ public class GameState {
             Card.Suit suit = Card.Suit.valueOf(s.split(" ")[1]);
             remainingCards.add(new Card(suit, value));
         }
-        Deck deck = new Deck();
-        deck.setDeck(remainingCards);
+        Deck savedDeck = new Deck();
+        savedDeck.setDeck(remainingCards);
+        deck = savedDeck;
 
         people = new ArrayList<>(Arrays.asList(user, p1, p2, dealer));
     }
