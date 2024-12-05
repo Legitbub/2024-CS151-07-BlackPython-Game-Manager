@@ -19,10 +19,10 @@ public class SnakeUI{
     private static AnimationTimer timer;
     private static Scene scene;
 
-    public static Scene createSnakeGame(Stage stage) {
+    public static Scene createSnakeGame(Stage stage, String username ){
         Snake snake = new Snake(WIDTH, HEIGHT);
         Food food = new Food(WIDTH, HEIGHT);
-        ScoreManager scoreManager = new ScoreManager();
+        ScoreManager scoreManager = new ScoreManager(username);
         Game gameBoard = new Game(WIDTH, HEIGHT, snake, scoreManager, food);
         InputHandler inputHandler = new InputHandler(snake);
 
@@ -39,7 +39,7 @@ public class SnakeUI{
         //Note: Should prob use this for the BlackJackUI too
         restartButton.setStyle("-fx-font-size: 20px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
         restartButton.setVisible(false);
-        restartButton.setOnAction(event -> restartGame(stage, restartButton, root, gameBoard, snake, food, scoreManager));
+        restartButton.setOnAction(event -> restartGame(stage, restartButton, root, gameBoard, snake, food, scoreManager, username));
         root.getChildren().add(restartButton);
         restartButton.setTranslateY(110);
         
@@ -123,12 +123,12 @@ public class SnakeUI{
     }
 
     //stop the timer and rest game state and reinitialize the game when restart button is clicked
-    private static void restartGame(Stage stage, Button restartButton, StackPane root, Game gameBoard, Snake snake, Food food, ScoreManager scoreManager) {
+    private static void restartGame(Stage stage, Button restartButton, StackPane root, Game gameBoard, Snake snake, Food food, ScoreManager scoreManager, String username) {
         timer.stop();
         isPaused = false;
         isGameOver = false;
         restartButton.setVisible(false);
-        Scene newScene = createSnakeGame(stage);
+        Scene newScene = createSnakeGame(stage, username);
         stage.setScene(newScene);
     }
 

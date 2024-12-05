@@ -17,7 +17,14 @@ import javafx.scene.text.Font;
 import javafx.geometry.Pos;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,10 +33,13 @@ import Manager.GameManager;
 
 public class BlackjackUI {
     private static Scene ui;
+    private static String username;
+    private static final String HIGH_SCORE_FILE = "high_scores.txt";
     static GameState game = BJGame.getGame();
 
     // Ask user for save data or new game at the start
-    public static Scene saveDataEntry(double length, double width) {
+    public static Scene saveDataEntry(double length, double width, String username) {
+        BlackjackUI.username = username;
         ToolBar toolBar = makeToolbar();
         BorderPane bp = new BorderPane();
         bp.setTop(toolBar);
@@ -88,6 +98,7 @@ public class BlackjackUI {
         HBox cpu2Hand = new HBox();
         VBox cpu2Area = new VBox(cpu2Hand);
 
+        game.getUser().setBalance(loadBalance(username));
         // Bottom of screen for user interaction
         TextField betEntry = new TextField();
         betEntry.setPromptText("$0");
@@ -203,6 +214,7 @@ public class BlackjackUI {
         // String is copied to clipboard for future pasting
         Button save = new Button("Save");
         save.setOnAction(e -> {
+            saveBalance();
             Clipboard clipboard = Clipboard.getSystemClipboard();
             ClipboardContent saveString = new ClipboardContent();
             StringBuilder str = new StringBuilder();
@@ -329,15 +341,68 @@ public class BlackjackUI {
     public static ToolBar makeToolbar() {
         Button mainMenu = new Button("Main Menu");
         mainMenu.setOnAction(e -> {
+            saveBalance();
             GameManager.mainStage.setScene(GameManager.mainMenuScene);
         });
         Button logout = new Button("Logout");
         logout.setOnAction(e -> {
+            saveBalance();
             GameManager.mainStage.setScene(GameManager.loginScene);
         });
         ToolBar toolBar = new ToolBar(mainMenu);
         toolBar.getItems().add(logout);
 
         return toolBar;
+    }
+    private static void saveBalance() {
+    List<String> lines = new ArrayList<>();
+    boolean userFound = false;
+    int balance = game.getUser().getBalance();
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_FILE))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length == 3 && parts[0].equals(username)) {
+                // Update the snake high score for the user
+                parts[1] = String.valueOf(balance);
+                line = String.join(",", parts); // Reconstruct the line
+                userFound = true;
+            }
+            lines.add(line); // Add the line to the list
+        }
+    } catch (IOException e) {
+        System.out.println("Error reading high score file: " + e.getMessage());
+    }
+
+    // If the user was not found, add a new row for them
+    if (!userFound) {
+        lines.add(username + ","+ balance+ "," + "0");
+    }
+
+    // Write the updated contents back to the file
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(HIGH_SCORE_FILE))) {
+        for (String updatedLine : lines) {
+            writer.write(updatedLine);
+            writer.newLine();
+        }
+    } catch (IOException e) {
+        System.out.println("Error saving high score file: " + e.getMessage());
+    }
+    }
+
+    private static int loadBalance(String username) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(","); // Split the row into columns
+                if (parts.length == 3 && parts[0].equals(username)) {
+                    return Integer.parseInt(parts[1]);
+                }
+            }
+        } catch (IOException | NumberFormatException e) {
+            System.out.println("Error loading high score for user " + username + ": " + e.getMessage());
+        }
+        return 100; // Default
     }
 }

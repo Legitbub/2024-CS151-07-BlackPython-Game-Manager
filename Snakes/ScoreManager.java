@@ -5,17 +5,21 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScoreManager {
     
     private int score;
     private int highScore;
-    private static final String HIGH_SCORE_FILE = "highscore.txt";
+    private String username;
+    private static final String HIGH_SCORE_FILE = "high_scores.txt";
 
 
-    public ScoreManager(){
+    public ScoreManager(String username) {
         this.score = 0;
-        this.highScore = loadHighScore();
+        this.username = username;
+        this.highScore = loadHighScore(username);
     }
     //increment score for every food eaten
     public void incrementScore(int amount){
@@ -43,19 +47,55 @@ public class ScoreManager {
         return highScore;
     }
 
-    private int loadHighScore() {
+    private int loadHighScore(String username) {
         try (BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_FILE))) {
-            return Integer.parseInt(reader.readLine());
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(","); // Split the row into columns
+                if (parts.length == 3 && parts[0].equals(username)) {
+                    return Integer.parseInt(parts[2]); // Return the 3rd value (snake high score)
+                }
+            }
         } catch (IOException | NumberFormatException e) {
-            return 0; // Default high score if file is missing or invalid
+            System.out.println("Error loading high score for user " + username + ": " + e.getMessage());
         }
+        return 0; // Default high score if the user is not found or file is invalid
     }
 
     private void saveHighScore() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(HIGH_SCORE_FILE))) {
-            writer.write(String.valueOf(highScore));
-        } catch (IOException e) {
-            e.printStackTrace();
+    List<String> lines = new ArrayList<>();
+    boolean userFound = false;
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_FILE))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split(",");
+            if (parts.length == 3 && parts[0].equals(username)) {
+                // Update the snake high score for the user
+                parts[2] = String.valueOf(highScore);
+                line = String.join(",", parts); // Reconstruct the line
+                userFound = true;
+            }
+            lines.add(line); // Add the line to the list
         }
+    } catch (IOException e) {
+        System.out.println("Error reading high score file: " + e.getMessage());
     }
+
+    // If the user was not found, add a new row for them
+    if (!userFound) {
+        lines.add(username + ",0," + highScore);
+    }
+
+    // Write the updated contents back to the file
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(HIGH_SCORE_FILE))) {
+        for (String updatedLine : lines) {
+            writer.write(updatedLine);
+            writer.newLine();
+        }
+    } catch (IOException e) {
+        System.out.println("Error saving high score file: " + e.getMessage());
+    }
+}
+
 }

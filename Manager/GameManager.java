@@ -22,13 +22,14 @@ public class GameManager extends Application {
     private final String USERS_FILE = "user_accounts.txt";
     private final String HIGH_SCORES_FILE = "high_scores.txt";
     private Map<String, String> userAccounts = new HashMap<>();
-    private Map<String, Integer> highScores = new TreeMap<>(Collections.reverseOrder());
+    private Map<String, int[]> highScores = new TreeMap<>(Collections.reverseOrder());
 
     public static Stage mainStage;
     public static Scene mainMenuScene;
     public static Scene loginScene;
 
     private Scene snakeScene;
+    
 
     public static void main(String[] args) {
         launch(args);
@@ -121,7 +122,7 @@ public class GameManager extends Application {
                 messageLabel.setText("Username already exists!");
             } else {
                 userAccounts.put(username, password);
-                highScores.put(username, 0); 
+                highScores.put(username, new int[] {0, 0}); 
                 saveUserAccounts();
                 saveHighScores();
                 messageLabel.setText("Account created successfully!");
@@ -140,7 +141,7 @@ public class GameManager extends Application {
 
     private  void showMainMenu(String username) {
         BorderPane mainLayout = new BorderPane();
-
+        loadHighScores();
         // Top: Toolbar
         ToolBar toolbar = new ToolBar();
         Button mainMenuButton = new Button("Main Menu");
@@ -155,10 +156,16 @@ public class GameManager extends Application {
         highScoresBox.setPadding(new Insets(10));
         Label highScoresLabel = new Label("Top High Scores:");
         ListView<String> highScoresList = new ListView<>();
+        
+        // Display each user's scores (Blackjack and Snake)
         highScores.entrySet().stream()
-                .limit(5)
-                .forEach(entry -> highScoresList.getItems().add(entry.getKey() + ": " + entry.getValue()));
-
+                .limit(5) // Limit to top 5 users
+                .forEach(entry -> {
+                    String username1 = entry.getKey();
+                    int[] scores = entry.getValue();
+                    highScoresList.getItems().add(username1 + " - Blackjack: " + scores[0] + ", Snake: " + scores[1]);
+                });
+        
         highScoresBox.getChildren().addAll(highScoresLabel, highScoresList);
         mainLayout.setLeft(highScoresBox);
 
@@ -183,13 +190,13 @@ public class GameManager extends Application {
         // Placeholder for Blackjack integration
         System.out.println("Launching Blackjack for " + username);
         mainStage.setScene(BlackjackUI.saveDataEntry(DEFAULT_WINDOW_LENGTH,
-                DEFAULT_WINDOW_WIDTH));
+                DEFAULT_WINDOW_WIDTH, username));
     }
 
     private void launchSnake(String username) {
         // Placeholder for Snake integration
         System.out.println("Launching Snake for " + username);
-        snakeScene = SnakeUI.createSnakeGame(mainStage);
+        snakeScene = SnakeUI.createSnakeGame(mainStage, username);
         mainStage.setScene(snakeScene);
     }
 
@@ -218,25 +225,35 @@ public class GameManager extends Application {
         }
     }
 
+    
     private void loadHighScores() {
         try (BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORES_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 2) {
-                    highScores.put(parts[0], Integer.parseInt(parts[1]));
+                if (parts.length == 3) {
+                    String username = parts[0];
+                    int blackjackHighScore = Integer.parseInt(parts[1]);
+                    int snakeHighScore = Integer.parseInt(parts[2]);
+
+                    // Store scores in the map
+                    highScores.put(username, new int[] {blackjackHighScore, snakeHighScore});
                 }
             }
         } catch (IOException e) {
             System.out.println("No high scores file found, starting fresh.");
+        } catch (NumberFormatException e) {
+            System.out.println("Error parsing high scores file. Ensure the format is correct.");
         }
     }
 
     private void saveHighScores() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(HIGH_SCORES_FILE))) {
-            for (Map.Entry<String, Integer> entry : highScores.entrySet()) {
-                writer.write(entry.getKey() + "," + entry.getValue());
-                writer.newLine();
+            for (Map.Entry<String, int[]> entry : highScores.entrySet()) {
+                // Convert the int[] to a string
+                int[] scores = entry.getValue();
+                writer.write(entry.getKey() + "," + scores[0] + "," + scores[1]); // Username, Blackjack, Snake
+                writer.newLine(); 
             }
         } catch (IOException e) {
             System.out.println("Error saving high scores.");
