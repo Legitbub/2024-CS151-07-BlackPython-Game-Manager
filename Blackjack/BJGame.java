@@ -75,4 +75,8 @@ public class BJGame {
     public static GameState getGame() {
         return game;
     }
+
+    public static void setGame(GameState game) {
+        BJGame.game = game;
+    }
 }
