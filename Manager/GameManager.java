@@ -14,14 +14,21 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.*;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
 public class GameManager extends Application {
     private final double DEFAULT_WINDOW_LENGTH = 1240;
     private final double DEFAULT_WINDOW_WIDTH = 780;
     private final String USERS_FILE = "user_accounts.txt";
     private final String HIGH_SCORES_FILE = "high_scores.txt";
-    private Map<String, String> userAccounts = new HashMap<>();
+    private final byte[] salt = new byte[]{-97, 45, -104, 72, 18, 104, -121, -29, 30, -115, 82, -60, -121, -4, 71, 34};
+    private Map<String, byte[] > userAccounts = new HashMap<>();
     private Map<String, int[]> highScores = new TreeMap<>(Collections.reverseOrder());
 
     public static Stage mainStage;
@@ -83,10 +90,18 @@ public class GameManager extends Application {
         submitButton.setOnAction(e -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
-            if (userAccounts.containsKey(username) && userAccounts.get(username).equals(password)) {
-                showMainMenu(username);
+        
+            if (userAccounts.containsKey(username)) {
+
+                byte[] storedHash = userAccounts.get(username);
+                byte[] enteredPasswordHash = hashPassword(password);        
+                if (Arrays.equals(storedHash, enteredPasswordHash)) {
+                    showMainMenu(username);
+                } else {
+                    messageLabel.setText("Invalid password!");
+                }
             } else {
-                messageLabel.setText("Invalid username or password!");
+                messageLabel.setText("Invalid username!");
             }
         });
 
@@ -121,7 +136,8 @@ public class GameManager extends Application {
             if (userAccounts.containsKey(username)) {
                 messageLabel.setText("Username already exists!");
             } else {
-                userAccounts.put(username, password);
+                byte[] hpassword = hashPassword(password);
+                userAccounts.put(username, hpassword);
                 highScores.put(username, new int[] {0, 0}); 
                 saveUserAccounts();
                 saveHighScores();
@@ -206,22 +222,38 @@ public class GameManager extends Application {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 2) {
-                    userAccounts.put(parts[0], parts[1]);
+                    String username = parts[0];
+                    byte[] hashedPassword = Base64.getDecoder().decode(parts[1]);
+                    userAccounts.put(username, hashedPassword);
                 }
             }
         } catch (IOException e) {
             System.out.println("No user accounts file found, starting fresh.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error decoding password from file. Ensure the file format is correct.");
         }
     }
 
     private void saveUserAccounts() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(USERS_FILE))) {
-            for (Map.Entry<String, String> entry : userAccounts.entrySet()) {
-                writer.write(entry.getKey() + "," + entry.getValue());
+            for (Map.Entry<String, byte[]> entry : userAccounts.entrySet()) {
+                String username = entry.getKey();
+                String hashedPasswordBase64 = Base64.getEncoder().encodeToString(entry.getValue());
+                writer.write(username + "," + hashedPasswordBase64);
                 writer.newLine();
             }
         } catch (IOException e) {
             System.out.println("Error saving user accounts.");
+        }
+    }
+    private byte[] hashPassword(String password) {
+        try {
+            KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] hash = factory.generateSecret(spec).getEncoded();
+            return hash;
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new RuntimeException(e);
         }
     }
 
