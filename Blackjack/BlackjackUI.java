@@ -355,40 +355,42 @@ public class BlackjackUI {
         return toolBar;
     }
     private static void saveBalance() {
-    List<String> lines = new ArrayList<>();
-    boolean userFound = false;
-    int balance = game.getUser().getBalance();
+        List<String> lines = new ArrayList<>();
+        boolean userFound = false;
+        int balance = game.getUser().getBalance();
 
-    try (BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_FILE))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] parts = line.split(",");
-            if (parts.length == 3 && parts[0].equals(username)) {
-                // Update the snake high score for the user
-                parts[1] = String.valueOf(balance);
-                line = String.join(",", parts); // Reconstruct the line
-                userFound = true;
+        try (BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3 && parts[0].equals(username)) {
+                    // Update the snake high score for the user
+                    if (balance > Integer.parseInt(parts[1])) {
+                        parts[1] = String.valueOf(balance);
+                    }
+                    line = String.join(",", parts); // Reconstruct the line
+                    userFound = true;
+                }
+                lines.add(line); // Add the line to the list
             }
-            lines.add(line); // Add the line to the list
+        } catch (IOException e) {
+            System.out.println("Error reading high score file: " + e.getMessage());
         }
-    } catch (IOException e) {
-        System.out.println("Error reading high score file: " + e.getMessage());
-    }
 
-    // If the user was not found, add a new row for them
-    if (!userFound) {
-        lines.add(username + ","+ balance+ "," + "0");
-    }
-
-    // Write the updated contents back to the file
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(HIGH_SCORE_FILE))) {
-        for (String updatedLine : lines) {
-            writer.write(updatedLine);
-            writer.newLine();
+        // If the user was not found, add a new row for them
+        if (!userFound) {
+            lines.add(username + ","+ balance+ "," + "0");
         }
-    } catch (IOException e) {
-        System.out.println("Error saving high score file: " + e.getMessage());
-    }
+
+        // Write the updated contents back to the file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(HIGH_SCORE_FILE))) {
+            for (String updatedLine : lines) {
+                writer.write(updatedLine);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving high score file: " + e.getMessage());
+        }
     }
 
     private static int loadBalance(String username) {
@@ -397,7 +399,9 @@ public class BlackjackUI {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(","); // Split the row into columns
                 if (parts.length == 3 && parts[0].equals(username)) {
-                    return Integer.parseInt(parts[1]);
+                    if (Integer.parseInt(parts[1]) >= 100) {
+                        return Integer.parseInt(parts[1]);
+                    }
                 }
             }
         } catch (IOException | NumberFormatException e) {
