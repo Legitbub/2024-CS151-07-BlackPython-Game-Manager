@@ -11,6 +11,6 @@ Contributions:
 
     Josh: Blackjack
 
-    Bao: Snakes, Manager
+    Bao: Snakes, Manager, UML
 
-    Vats: Snakes
+    Vats: Snakes, Manager
