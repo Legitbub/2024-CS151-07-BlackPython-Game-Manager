@@ -17,18 +17,38 @@ their high scores saved in the game's records.
 # Features:
 
 # Installation Instructions:
+To set up the project locally:
+
+Clone the repository:
+```rb
+git clone https://github.com/Legitbub/2024-CS151-07-BlackPython-Game-Manager.git
+```
+
+Navigate to the project directory:
+```rb
+cd 2024-CS151-07-BlackPython-Game-Manager
+```
+Setup JavaFX Before Running:
+```rb
+Add appropriate .jar files required by javaFX into JRE System Library
+```
+Run the project:
+```rb
+Enter into Runner.java inside the Manager folder
+Click run located above main function
+```
 
 # Project Structure
 
 # Contributions: 
 
-    Justin: Blackjack, Manager
+### Justin: `Blackjack`, `Manager`
 
-    Josh: Blackjack
+### Josh: `Blackjack`
 
-    Bao: Snakes, Manager, UML
+### Bao: `Snakes`, `Manager`, `UML`
 
-    Vats: Snakes, Manager
+### Vats: `Snakes`, `Manager`
 
 # Acknowledgments:
 This project was developed as part of the CS151 course at San Jose State University. Special thanks to Professor Telvin Zhong for his teaching throughout the Fall 2024 semester.
