@@ -11,7 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class SnakeUI{
+public class SnakeUI {
     private static final int WIDTH = 20;
     private static final int HEIGHT = 20;
     private static boolean isPaused = false;
@@ -19,7 +19,7 @@ public class SnakeUI{
     private static AnimationTimer timer;
     private static Scene scene;
 
-    public static Scene createSnakeGame(Stage stage, String username ){
+    public static Scene createSnakeGame(Stage stage, String username ) {
         Snake snake = new Snake(WIDTH, HEIGHT);
         Food food = new Food(WIDTH, HEIGHT);
         ScoreManager scoreManager = new ScoreManager(username);
@@ -43,7 +43,7 @@ public class SnakeUI{
         root.getChildren().add(restartButton);
         restartButton.setTranslateY(110);
         
-        //set the focus of the button to false so it doesnt interfere with key events to control the snake's direction
+        //set the focus of the button to false so it doesn't interfere with key events to control the snake's direction
         Button mainMenu = new Button("Main Menu");
         mainMenu.setOnAction(e -> {
             stopGame();
@@ -105,14 +105,14 @@ public class SnakeUI{
         return scene;
     }
     //reset the timer completely so game is stopped and reseted when switching in between scenes
-    private static void stopGame(){
+    private static void stopGame() {
         if(timer != null){
             timer.stop();
         }
         isPaused = false;
         isGameOver = false;
     }
-    //Bring up the pause menu when ESP is pressed and go back to game when ESP is pressed again
+    //Bring up the pause menu when ESC is pressed and go back to game when ESC is pressed again
     private static void togglePause(Game gameBoard) {
         isPaused = !isPaused;
         if (isPaused) {
